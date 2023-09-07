@@ -1,5 +1,6 @@
 from urllib.parse import quote
 
+from sqlalchemy.engine.interfaces import ExecuteStyle
 from sqlalchemy.sql.elements import TextClause
 from sqlalchemy.util import asbool
 
@@ -16,7 +17,7 @@ class ClickHouseExecutionContext(ClickHouseExecutionContextBase):
     def pre_exec(self):
         # Always do executemany on INSERT with VALUES clause.
         if self.isinsert and self.compiled.statement.select is None:
-            self.executemany = True
+            self.execute_style = ExecuteStyle.EXECUTEMANY
 
 
 class ClickHouseNativeSQLCompiler(ClickHouseSQLCompiler):
@@ -62,7 +63,7 @@ class ClickHouseDialect_native(ClickHouseDialect):
             url.query.get('engine_reflection', 'true')
         )
 
-        return (str(url), ), {}
+        return (url.render_as_string(hide_password=False), ), {}
 
     def _execute(self, connection, sql, scalar=False, **kwargs):
         if isinstance(sql, str):

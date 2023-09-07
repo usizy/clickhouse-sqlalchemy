@@ -8,10 +8,10 @@ from sqlalchemy.util import to_list
 class ClickHouseDDLCompiler(compiler.DDLCompiler):
     def _get_default_string(self, default, name):
         sa_util.assert_arg_type(
-            default, (sa_util.string_types[0], ClauseElement, TextClause), name
+            default, (str, ClauseElement, TextClause), name
         )
 
-        if isinstance(default, sa_util.string_types):
+        if isinstance(default, str):
             return self.sql_compiler.render_literal_value(
                 default, sqltypes.STRINGTYPE
             )
