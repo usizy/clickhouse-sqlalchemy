@@ -1,6 +1,7 @@
 import enum
+from typing import Optional, Any
 
-from sqlalchemy import schema, types as sqltypes, util as sa_util, text
+from sqlalchemy import schema, types as sqltypes, util as sa_util, text, Connection
 from sqlalchemy.engine import default, reflection
 from sqlalchemy.sql import (
     compiler, elements
@@ -155,7 +156,12 @@ class ClickHouseDialect(default.DefaultDialect):
         rows = self._execute(connection, query, database=database)
         return [row.name for row in rows]
 
-    def has_table(self, connection, table_name, schema=None):
+    def has_table(
+            self, connection: Connection,
+            table_name: str,
+            schema: Optional[str] = None,
+            **kw: Any
+    ):
         quote = self._quote_table_name
         if schema:
             qualified_name = quote(schema) + '.' + quote(table_name)

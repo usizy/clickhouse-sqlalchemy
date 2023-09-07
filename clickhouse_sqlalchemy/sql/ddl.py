@@ -7,16 +7,15 @@ from sqlalchemy.sql.operators import custom_op
 
 
 class DropTable(DropTableBase):
-    def __init__(self, element, bind=None, if_exists=False):
+    def __init__(self, element, if_exists=False):
         self.on_cluster = element.dialect_options['clickhouse']['cluster']
-        super(DropTable, self).__init__(element, bind=bind,
-                                        if_exists=if_exists)
+        super(DropTable, self).__init__(element, if_exists=if_exists)
 
 
 class DropView(DropTableBase):
-    def __init__(self, element, bind=None, if_exists=False):
+    def __init__(self, element, if_exists=False):
         self.on_cluster = element.cluster
-        super(DropView, self).__init__(element, bind=bind, if_exists=if_exists)
+        super(DropView, self).__init__(element, if_exists=if_exists)
 
 
 class SchemaDropper(SchemaDropperBase):

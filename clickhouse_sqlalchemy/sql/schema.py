@@ -27,10 +27,6 @@ class Table(TableBase):
         return Join(self, right, onclause=onclause, isouter=isouter,
                     full=flags)
 
-    def select(self, whereclause=None, **params):
-        if whereclause:
-            return Select._create(self, whereclause, **params)
-        return Select._create(self, **params)
 
     @classmethod
     def _make_from_standard(cls, std_table, _extend_on=None):

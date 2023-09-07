@@ -47,6 +47,7 @@ class Query(BaseQuery):
             )
 
         self._with_cube = True
+        return self
 
     @_generative
     def with_rollup(self):
@@ -62,6 +63,7 @@ class Query(BaseQuery):
             )
 
         self._with_rollup = True
+        return self
 
     @_generative
     def with_totals(self):
@@ -72,31 +74,37 @@ class Query(BaseQuery):
             )
 
         self._with_totals = True
+        return self
 
     def _add_array_join(self, columns, left):
         join_type = ArrayJoin if not left else LeftArrayJoin
         self._array_join = join_type(*columns)
 
+        return self
+
     @_generative
     def array_join(self, *columns, **kwargs):
         left = kwargs.get("left", False)
-        self._add_array_join(columns, left=left)
+        return self._add_array_join(columns, left=left)
 
     @_generative
     def left_array_join(self, *columns):
-        self._add_array_join(columns, left=True)
+        return self._add_array_join(columns, left=True)
 
     @_generative
     def final(self):
         self._final = True
+        return self
 
     @_generative
     def sample(self, sample):
         self._sample = sample
+        return self
 
     @_generative
     def limit_by(self, by_clauses, limit, offset=None):
         self._limit_by = LimitByClause(by_clauses, limit, offset)
+        return self
 
     def join(self, *props, **kwargs):
         spec = {
@@ -106,7 +114,7 @@ class Query(BaseQuery):
         }
         rv = super(Query, self).join(*props, **kwargs)
 
-        x = rv._legacy_setup_joins[-1]
+        x = rv._setup_joins[-1]
         x_spec = dict(spec)
         # use 'full' key to pass extra flags
         x_spec['full'] = x[-1]['full']
